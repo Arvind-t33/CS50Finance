@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Quoted
+{% endblock %}
+
+{% block main %}
+
+    <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center containerPadding">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ tick }}</h5>
+                <h6 class="card-subtitle mb-2">Name: {{ name }}</h6>
+                <strong class="card-text">Price: {{ price }}</strong>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
