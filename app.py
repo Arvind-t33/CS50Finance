@@ -3,19 +3,14 @@ import os
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
-from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from helpers import apology, login_required, lookup, usd
 
 from datetime import datetime, timezone
 
-
 # Configure application
 app = Flask(__name__)
-
-# Ensure templates are auto-reloaded
-app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 # Custom filter
 app.jinja_env.filters["usd"] = usd
@@ -28,9 +23,6 @@ Session(app)
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///finance.db")
 
-# Make sure API key is set
-if not os.environ.get("API_KEY"):
-    raise RuntimeError("API_KEY not set")
 
 @app.after_request
 def after_request(response):
@@ -66,6 +58,7 @@ def index():
         heads.append(key)
 
     return render_template("portfolio.html", headers = headers, keys = heads, portfolio = acctInfo, length = len(userInfo), total = float("{:.2f}".format(grand_total)), balance = float("{:.2f}".format(curr_cash)))
+
 
 @app.route("/buy", methods=["GET", "POST"])
 @login_required
@@ -128,7 +121,6 @@ def buy():
 @login_required
 def history():
     """Show history of transactions"""
-
     histInfo = {"Symbol": [], "Price": [], "Shares": [], "Total": [], "Type": [], "Date": [], "Time": []}
     heads = []
 
@@ -149,7 +141,6 @@ def history():
         histInfo["Time"].append(history[i]["time"])
 
     return render_template("history.html", headers = histInfo, histInfo = histInfo, length = length, keys = heads)
-    # return apology("TODO")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -164,18 +155,18 @@ def login():
 
         # Ensure username was submitted
         if not request.form.get("username"):
-            return apology("must provide username", 400)
+            return apology("must provide username", 403)
 
         # Ensure password was submitted
         elif not request.form.get("password"):
-            return apology("must provide password", 400)
+            return apology("must provide password", 403)
 
         # Query database for username
         rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
-            return apology("invalid username and/or password", 400)
+            return apology("invalid username and/or password", 403)
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
@@ -213,11 +204,9 @@ def quote():
         return render_template("quote.html")
 
 
-
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
-    # Ensures that user reached route via POST.
     if request.method == "POST":
         # validates username and if valid, stores it in newUsername
         if not request.form.get("username"):
@@ -248,7 +237,6 @@ def register():
     else:
         return render_template("register.html")
 
-
 @app.route("/change_password", methods=["GET", "POST"])
 @login_required
 def change_password():
@@ -273,6 +261,7 @@ def change_password():
 
     else:
         return render_template("changePass.html")
+
 
 @app.route("/sell", methods=["GET", "POST"])
 @login_required
@@ -334,5 +323,3 @@ def sell():
 
     else:
         return render_template("sell.html")
-
-    # return apology("TODO")
