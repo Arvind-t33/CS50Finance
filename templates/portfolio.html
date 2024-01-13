@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Portfolio
+{% endblock %}
+
+{% block main %}
+
+    <h style="font-size: xx-large; margin-bottom: 8rem">Portfolio</h>
+
+    <table class="table table-striped">
+        <tr>
+            {% for head in headers %}
+                <th>{{ head }}</th>
+            {% endfor %}
+        </tr>
+        {% for i in range(length) %}
+            <tr class="shadow-sm">
+                {% for k in keys %}
+                    <td>{{ portfolio[k][i] }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    <div class="card shadow-sm" style="width: 18rem">
+        <strong>Account balance: </strong>
+        <p>${{ balance }}</p>
+    </div>
+    <div class="card shadow-sm">
+        <strong>Total: </strong>
+        <p>${{ total }}</p>
+    </div>
+{% endblock %}

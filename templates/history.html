@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Portfolio
+{% endblock %}
+
+{% block main %}
+
+    <h style="font-size: xx-large; margin-bottom: 8rem">Transaction History</h>
+
+    <table class="table table-striped">
+        <tr>
+            {% for head in headers %}
+                <th>{{ head }}</th>
+            {% endfor %}
+        </tr>
+        {% for i in range(length) %}
+            <tr class="shadow-sm">
+                {% for k in keys %}
+                    <td>{{ histInfo[k][i] }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
